@@ -5,6 +5,7 @@
 
 const heading = select('.heading');
 const center = select('.center');
+const anim = select('.anim');
 //==================================================================================
 
 function onEvent(event, selector, callback) {
@@ -21,6 +22,7 @@ function select(selector, parent = document) {
 
 function getLocation(position) {
     heading.style.visibility = 'visible';
+    anim.style.visibility = 'hidden';
     const { latitude, longitude } = position.coords;
 
     mapboxgl.accessToken = 'pk.eyJ1IjoidGFzaHBhbnJhIiwiYSI6ImNsYmdyd25nczBjNngzd3EzYWdqd2draXUifQ.xlyJIjdH5g74vO5ITOU0zQ';

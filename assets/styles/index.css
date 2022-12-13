@@ -93,14 +93,15 @@ header {
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100);
     background-color: var(--app-dark-grey);
-    display: flex;
+    display: grid;
     place-items: center;
     z-index: 5555;
 }
 
-.anim .loading {
+.loading {
+    position: fixed;
     width: 40px;
-    height: 30px;
+    height: 40px;
     border: 3px solid rgb(246 243 243 / 0.8);
     border-top: 3px solid transparent;
     border-radius: 50%;
