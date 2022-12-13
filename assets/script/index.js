@@ -6,6 +6,7 @@
 const heading = select('.heading');
 const center = select('.center');
 const anim = select('.anim');
+const loading = select('.loading');
 //==================================================================================
 
 function onEvent(event, selector, callback) {
@@ -19,48 +20,63 @@ function select(selector, parent = document) {
 
 
 //==============================================================================
+mapboxgl.accessToken = 'pk.eyJ1IjoidGFzaHBhbnJhIiwiYSI6ImNsYmdyd25nczBjNngzd3EzYWdqd2draXUifQ.xlyJIjdH5g74vO5ITOU0zQ';
+const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    style: 'mapbox://styles/tashpanra/clbl0uv2a000c14p7zq6034zo', // style URL
+    center: [0, 0], // starting position [lng, lat]
+    attributionControl: false,
+    pitch: 40,
+    zoom: 16, // starting zoom
+});
+
+map.dragPan.disable();
+map.keyboard.disable();
+map.scrollZoom.disable();
+map.touchZoomRotate.disable();
+map.doubleClickZoom.disable();
+
+const marker = new mapboxgl.Marker({
+    color: "#c94040",
+});
+
+//==============================================================================
+
 
 function getLocation(position) {
-    heading.style.visibility = 'visible';
-    anim.style.visibility = 'hidden';
+
+
     const { latitude, longitude } = position.coords;
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGFzaHBhbnJhIiwiYSI6ImNsYmdyd25nczBjNngzd3EzYWdqd2draXUifQ.xlyJIjdH5g74vO5ITOU0zQ';
-    const map = new mapboxgl.Map({
-        container: 'map', // container ID
-        style: 'mapbox://styles/tashpanra/clbl0uv2a000c14p7zq6034zo', // style URL
-        center: [longitude, latitude], // starting position [lng, lat]
-        attributionControl: false,
-        zoom: 16, // starting zoom
-    });
-
-
-    const marker = new mapboxgl.Marker({
-        color: "#c94040",
-        draggable: true
-    }).setLngLat([longitude, latitude])
-        .addTo(map);
+    if (longitude && latitude) {
+        map.setCenter([longitude, latitude]);
+        marker.setLngLat([longitude, latitude]).addTo(map);
+        setTimeout(() => { anim.style.display = 'none' }, 750);
+        heading.style.visibility = 'visible';
+    }
 
 }
 
 function errorHandler(error) {
+    loading.style.animationPlayState = 'paused';
     console.log(error.message);
 }
 
 const options = {
-    enableHighAccuracy: true
+    enableHighAccuracy: true,
+    maximumAge: 0
 };
 
+// The watchPosition() method is used to register a handler funtion that will be called automatically each time the position of the device.
 
-window.addEventListener('load', () => {
-    if (navigator.geolocation) {
 
-        const geo = navigator.geolocation;
-        geo.getCurrentPosition(getLocation, errorHandler, options);
-    } else {
-        console.log('Geolocation is not supported by your browser');
-    }
-});
+if (navigator.geolocation) {
+    const geo = navigator.geolocation;
+    geo.watchPosition(getLocation, errorHandler, options);
+} else {
+    console.log('Geolocation is not supported by your browser');
+}
+
 
 
 //==============================================================================
